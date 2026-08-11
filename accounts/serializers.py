@@ -3,11 +3,11 @@ from rest_framework import serializers
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only = True, min_length = 8)
-    password2 = serializers.CharField(write_only = True)
+    # password2 = serializers.CharField(write_only = True)
 
     class Meta:
         model = User
-        fields = ["id", "username", "email", "password", "password2"]
+        fields = ["id", "username", "email", "password"]
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
@@ -36,13 +36,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Password must be at least 8 characters long.")
         return value
 
-    def validate(self, data):
-        if "password" in data and "password2" in data:
-            if data["password"] != data["password2"]:
-                raise serializers.ValidationError("Passwords do not match.")
-        return data
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation.pop("password", None)  # Remove password from the representation
-        return representation
+    # def to_representation(self, instance):
+    #     representation = super().to_representation(instance)
+    #     representation.pop("password", None)  # Remove password from the representation
+    #     return representation
